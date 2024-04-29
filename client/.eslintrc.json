@@ -1,0 +1,43 @@
+{
+  "env": {
+    "browser": true
+  },
+  "extends": [
+    "eslint:recommended",
+    "plugin:@typescript-eslint/eslint-recommended",
+    "plugin:@typescript-eslint/recommended"
+  ],
+  "globals": {
+    "Atomics": "readonly",
+    "SharedArrayBuffer": "readonly"
+  },
+  "parser": "@typescript-eslint/parser",
+  "plugins": [
+    "@typescript-eslint"
+  ],
+  "parserOptions": {
+    "ecmaVersion": 2018,
+    "sourceType": "module"
+  },
+  "rules": {
+    "max-classes-per-file": [
+      "error",
+      1
+    ],
+    "no-case-declarations": "off",
+    "consistent-return": "error",
+    "semi": "error",
+    "prefer-template": "error",
+    "comma-dangle": "off",
+    "prefer-destructuring": "warn",
+    "quotes": [
+      2,
+      "double",
+      "avoid-escape"
+    ],
+    "@typescript-eslint/comma-dangle": [
+      "error",
+      "always-multiline"
+    ]
+  }
+}
