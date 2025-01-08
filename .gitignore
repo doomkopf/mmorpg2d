@@ -1,0 +1,13 @@
+node_modules
+yarn-error.log
+dist
+build
+out
+.idea/*
+*.cfg
+data
+engine-shared
+game-shared
+.DS_Store
+
+!.idea/codeStyles
