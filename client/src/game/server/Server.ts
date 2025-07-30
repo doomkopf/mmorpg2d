@@ -13,7 +13,7 @@ export class Server implements ArcturusSessionListener {
       generateUuid,
       "rpg",
       "localhost",
-      8080,
+      8082,
       USE_CASE_ID,
       STATUS_KEY,
       this,

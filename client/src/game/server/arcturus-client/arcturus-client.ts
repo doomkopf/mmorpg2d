@@ -3,6 +3,24 @@ import { ArcturusWebsocket, ArcturusWebsocketListener } from "./arcturus-websock
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export type Json = Record<string, any>
 
+interface Message {
+  app: AppMessage
+}
+
+interface AppMessage {
+  appId: string
+  theFunc: string
+  entityMsg?: EntityMessage
+  payload?: string
+  sid?: string
+  rid?: string
+}
+
+interface EntityMessage {
+  entityType: string
+  entityId: string
+}
+
 export interface ArcturusClientListener {
   onReceived(json: Json): void
 
@@ -36,7 +54,7 @@ export class ArcturusClient {
   }
 
   private isConnecting(): boolean {
-    if (!this.ws) {
+    if (this.isConnected()) {
       return false
     }
     return this.connecting
@@ -54,10 +72,11 @@ export class ArcturusClient {
     this.connecting = true
 
     return new Promise(resolve => {
-      this.websocketFactory(`${this.port === 443 ? "wss" : "ws"}://${this.host}:${this.port}/arcwsapi`,
+      this.websocketFactory(`${this.port === 443 ? "wss" : "ws"}://${this.host}:${this.port}/gamwsapi`,
         {
           onOpen: () => {
             this.connecting = false
+            this.sendDirectAllFromQueue()
             resolve(true)
             this.clientListener.onConnected()
           },
@@ -98,7 +117,21 @@ export class ArcturusClient {
     requestId: string | null,
     requestBody: Json,
   ): Promise<void> {
-    this.sendQueue.push(`${func}&${appId}&${entityType}&${entityId}&${sessionId}&${requestId || ""}${JSON.stringify(requestBody)}`)
+
+    const msg: Message = {
+      app: {
+        appId,
+        theFunc: func,
+        payload: JSON.stringify(requestBody),
+        sid: sessionId,
+        rid: requestId || undefined,
+        entityMsg: {
+          entityType,
+          entityId,
+        },
+      },
+    }
+    this.sendQueue.push(JSON.stringify(msg))
 
     if (!await this.connectIfNotConnected()) {
       return
