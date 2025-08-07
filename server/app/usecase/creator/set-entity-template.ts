@@ -1,5 +1,5 @@
-import { FuncVisibility, StatelessFunc } from "gammaray-app/core";
-import { LogLevel } from "gammaray-app/log";
+import { FuncVisibility, StatelessFunc } from "../../../tmp-api/core";
+import { LogLevel } from "../../../tmp-api/log";
 import { STATUS_KEY, SetEntityTemplateRequest, StatusKey } from "../../game-shared/dto";
 
 export const setEntityTemplate: StatelessFunc<SetEntityTemplateRequest> = {

@@ -1,4 +1,3 @@
-import { GammarayApp } from "gammaray-app/core";
 import { allimagesinfoDeserializeEntity } from "./app/entity/all-images-info/all-images-info-config";
 import { areaInterval } from "./app/entity/area/area-config";
 import { areaDeserializeEntity, areaSerializeEntity } from "./app/entity/area/area-persistency";
@@ -25,6 +24,7 @@ import { joinGame, onLoggedIn } from "./app/usecase/join-game";
 import { movePlayer, movePlayer1 } from "./app/usecase/move-player";
 import { stopPlayer, stopPlayer1 } from "./app/usecase/stop-player";
 import { userToArea1 } from "./app/usecase/tools/user-to-area";
+import { GammarayApp } from "./tmp-api/core";
 
 const rpg: GammarayApp = {
   func: {

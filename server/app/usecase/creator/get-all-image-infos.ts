@@ -1,11 +1,11 @@
-import { EntityFunc, FuncVisibility, StatelessFunc } from "gammaray-app/core";
+import { EntityFunc, FuncVisibility, StatelessFunc } from "../../../tmp-api/core";
 import { AllImagesInfo, DEFAULT_IMAGE_INFOS_ENTITY_ID } from "../../entity/all-images-info/AllImagesInfo";
 import { GetAllImageInfosResponse } from "../../game-shared/dto";
 
 export const getAllImageInfos: StatelessFunc<never> = {
   vis: FuncVisibility.pub,
-  func: (lib, params, ctx) => {
-    lib.entityFunc.invoke("allimagesinfo", "getAllImageInfos1", DEFAULT_IMAGE_INFOS_ENTITY_ID, null, ctx);
+  func: (lib) => {
+    lib.entityFunc.invoke("allimagesinfo", "getAllImageInfos1", DEFAULT_IMAGE_INFOS_ENTITY_ID, null);
   },
 };
 

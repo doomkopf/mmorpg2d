@@ -1,10 +1,10 @@
-import { EntityFunc, EntityFunctions, FuncContext, FuncVisibility, JsonObject } from "gammaray-app/core";
-import { LogLevel } from "gammaray-app/log";
+import { EntityFunc, EntityFunctions, FuncVisibility, JsonObject, RequestContext } from "../../../tmp-api/core";
+import { LogLevel } from "../../../tmp-api/log";
 import { User } from "../../entity/user/User";
 
 export function userToArea(
   entityFuncs: EntityFunctions,
-  ctx: FuncContext,
+  ctx: RequestContext,
   areaFunc: string,
   params: JsonObject | null,
 ): void {
@@ -16,7 +16,7 @@ export function userToArea(
     f: areaFunc,
     p: params,
   };
-  entityFuncs.invoke("user", "userToArea1", ctx.requestingUserId, p, ctx);
+  entityFuncs.invoke("user", "userToArea1", ctx.requestingUserId, p);
 }
 
 interface UserToArea {
@@ -26,7 +26,7 @@ interface UserToArea {
 
 export const userToArea1: EntityFunc<User, UserToArea> = {
   vis: FuncVisibility.pri,
-  func: (user, id, lib, params, ctx) => {
+  func: (user, id, lib, params) => {
     if (!user) {
       lib.log.log(LogLevel.WARN, `UserToArea: User ${id} not present`);
       return;
@@ -37,6 +37,6 @@ export const userToArea1: EntityFunc<User, UserToArea> = {
       return;
     }
 
-    lib.entityFunc.invoke("area", params.f, user.areaId, params.p, ctx);
+    lib.entityFunc.invoke("area", params.f, user.areaId, params.p);
   },
 };

@@ -1,4 +1,4 @@
-import { EntityFunc, FuncVisibility } from "gammaray-app/core";
+import { EntityFunc, FuncVisibility } from "../../tmp-api/core";
 import { Image } from "../entity/image/Image";
 import { GetImageResponse } from "../game-shared/dto";
 

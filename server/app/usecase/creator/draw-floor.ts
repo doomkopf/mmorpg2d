@@ -1,4 +1,4 @@
-import { EntityFunc, FuncVisibility, StatelessFunc } from "gammaray-app/core";
+import { EntityFunc, FuncVisibility, StatelessFunc } from "../../../tmp-api/core";
 import { Integer } from "../../engine-shared/Integer";
 import { TileCoord } from "../../engine-shared/TileCoord";
 import { Area } from "../../entity/area/Area";

@@ -1,4 +1,4 @@
-import { UserFunctions } from "gammaray-app/user";
+import { UserFunctions } from "../../../../tmp-api/user";
 import { Movable } from "../../../engine-shared/entity/Movable";
 import { Vector2D } from "../../../engine-shared/geom/Vector2D";
 import { UpdateEntitiesDto, UseCaseId } from "../../../game-shared/dto";

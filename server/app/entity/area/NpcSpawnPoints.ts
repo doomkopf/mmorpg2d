@@ -1,5 +1,5 @@
-import { Tools } from "gammaray-app/tools";
-import { UserFunctions } from "gammaray-app/user";
+import { Tools } from "../../../tmp-api/tools";
+import { UserFunctions } from "../../../tmp-api/user";
 import { Area } from "./Area";
 import { NpcSpawnPoint } from "./NpcSpawnPoint";
 

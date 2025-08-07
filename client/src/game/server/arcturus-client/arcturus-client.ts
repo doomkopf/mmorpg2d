@@ -118,6 +118,14 @@ export class ArcturusClient {
     requestBody: Json,
   ): Promise<void> {
 
+    let entityMsg: EntityMessage | undefined
+    if (entityType && entityType.length > 0) {
+      entityMsg = {
+        entityType,
+        entityId,
+      }
+    }
+
     const msg: Message = {
       app: {
         appId,
@@ -125,10 +133,7 @@ export class ArcturusClient {
         payload: JSON.stringify(requestBody),
         sid: sessionId,
         rid: requestId || undefined,
-        entityMsg: {
-          entityType,
-          entityId,
-        },
+        entityMsg,
       },
     }
     this.sendQueue.push(JSON.stringify(msg))

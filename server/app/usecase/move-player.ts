@@ -1,4 +1,4 @@
-import { EntityFunc, FuncVisibility, StatelessFunc } from "gammaray-app/core";
+import { EntityFunc, FuncVisibility, StatelessFunc } from "../../tmp-api/core";
 import { Vector2D } from "../engine-shared/geom/Vector2D";
 import { Area } from "../entity/area/Area";
 import { areaUseCaseValidations } from "../entity/area/area-tools";

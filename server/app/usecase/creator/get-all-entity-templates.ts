@@ -1,4 +1,4 @@
-import { FuncVisibility, StatelessFunc } from "gammaray-app/core";
+import { FuncVisibility, StatelessFunc } from "../../../tmp-api/core";
 import { ENTITY_TEMPLATES } from "../../game-data/entity-templates";
 
 export const getAllEntityTemplates: StatelessFunc<never> = {

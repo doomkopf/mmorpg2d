@@ -1,4 +1,4 @@
-import { FuncVisibility, StatelessFunc } from "gammaray-app/core";
+import { FuncVisibility, StatelessFunc } from "../../../tmp-api/core";
 import { GetEntityTemplateRequest, GetEntityTemplateResponse, STATUS_KEY, StatusKey } from "../../game-shared/dto";
 import { getEntityTemplate } from "../../tools";
 

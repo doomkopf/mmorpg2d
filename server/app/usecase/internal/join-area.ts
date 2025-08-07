@@ -1,4 +1,4 @@
-import { EntityFunc, EntityFunctions, EntityId, FuncVisibility } from "gammaray-app/core";
+import { EntityFunc, EntityFunctions, EntityId, FuncVisibility } from "../../../tmp-api/core";
 import { Area, JoinAreaSide } from "../../entity/area/Area";
 import { createDefaultArea } from "../../entity/area/area-config";
 import { User } from "../../entity/user/User";
@@ -26,7 +26,7 @@ interface JoinAreaUser {
 
 export const joinArea1: EntityFunc<User, JoinAreaUser> = {
   vis: FuncVisibility.pri,
-  func: (user, id, lib, params, ctx) => {
+  func: (user, id, lib, params) => {
     if (!user) {
       user = new User(null);
     }
@@ -36,7 +36,7 @@ export const joinArea1: EntityFunc<User, JoinAreaUser> = {
       userId: id,
       side: params.side,
     };
-    lib.entityFunc.invoke("area", "joinArea2", user.areaId, joinArea, ctx);
+    lib.entityFunc.invoke("area", "joinArea2", user.areaId, joinArea);
 
     return user;
   },

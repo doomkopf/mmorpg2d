@@ -1,15 +1,15 @@
-import { EntityFunc, FuncVisibility, StatelessFunc } from "gammaray-app/core";
+import { EntityFunc, FuncVisibility, StatelessFunc } from "../../../tmp-api/core";
 import { AllImagesInfo, DEFAULT_IMAGE_INFOS_ENTITY_ID } from "../../entity/all-images-info/AllImagesInfo";
 import { Image } from "../../entity/image/Image";
 import { StatusKey, UploadImageRequest, UploadImageResponse } from "../../game-shared/dto";
 
 export const uploadImage: StatelessFunc<UploadImageRequest> = {
   vis: FuncVisibility.pub,
-  func: (lib, params, ctx) => {
+  func: (lib, params) => {
     // TODO admin check
 
     const imgId = params.id || lib.tools.randomUUID();
-    lib.entityFunc.invoke("image", "uploadImage1", imgId, params, ctx);
+    lib.entityFunc.invoke("image", "uploadImage1", imgId, params);
   },
 };
 
@@ -28,7 +28,7 @@ export const uploadImage1: EntityFunc<Image, UploadImageRequest> = {
       isNew = true;
 
       // adding info async since it is only important for creators
-      lib.entityFunc.invoke("allimagesinfo", "uploadImage2", DEFAULT_IMAGE_INFOS_ENTITY_ID, { id }, ctx);
+      lib.entityFunc.invoke("allimagesinfo", "uploadImage2", DEFAULT_IMAGE_INFOS_ENTITY_ID, { id });
     }
 
     image.url = params.url;

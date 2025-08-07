@@ -1,5 +1,5 @@
-import { EntityId } from "gammaray-app/core";
-import { Lib } from "gammaray-app/lib";
+import { EntityId } from "../../../tmp-api/core";
+import { Lib } from "../../../tmp-api/lib";
 import { DEFAULT_AREA_HEIGHT, DEFAULT_AREA_WIDTH } from "../../contants";
 import { Air } from "./Air";
 import { Area } from "./Area";

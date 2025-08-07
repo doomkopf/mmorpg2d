@@ -1,14 +1,14 @@
-import { EntityFunc, FuncVisibility, StatelessFunc } from "gammaray-app/core";
+import { EntityFunc, FuncVisibility, StatelessFunc } from "../../../tmp-api/core";
 import { AllImagesInfo, DEFAULT_IMAGE_INFOS_ENTITY_ID } from "../../entity/all-images-info/AllImagesInfo";
 import { Image } from "../../entity/image/Image";
 import { RemoveImageRequest, RemoveImageResponse, StatusKey } from "../../game-shared/dto";
 
 export const removeImage: StatelessFunc<RemoveImageRequest> = {
   vis: FuncVisibility.pub,
-  func: (lib, params, ctx) => {
+  func: (lib, params) => {
     // TODO admin check
 
-    lib.entityFunc.invoke("image", "removeImage1", params.id, null, ctx);
+    lib.entityFunc.invoke("image", "removeImage1", params.id, null);
   },
 };
 
@@ -23,7 +23,7 @@ export const removeImage1: EntityFunc<Image, never> = {
       return undefined;
     }
 
-    lib.entityFunc.invoke("allimagesinfo", "removeImage2", DEFAULT_IMAGE_INFOS_ENTITY_ID, { id }, ctx);
+    lib.entityFunc.invoke("allimagesinfo", "removeImage2", DEFAULT_IMAGE_INFOS_ENTITY_ID, { id });
 
     return "delete";
   },

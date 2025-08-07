@@ -1,4 +1,4 @@
-import { DeserializeEntity, SerializeEntity } from "gammaray-app/core";
+import { DeserializeEntity, SerializeEntity } from "../../../tmp-api/core";
 import { Vector2D } from "../../engine-shared/geom/Vector2D";
 import { ENTITY_TEMPLATES } from "../../game-data/entity-templates";
 import { Air } from "./Air";

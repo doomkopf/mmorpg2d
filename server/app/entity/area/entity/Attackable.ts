@@ -1,4 +1,4 @@
-import { UserFunctions } from "gammaray-app/user";
+import { UserFunctions } from "../../../../tmp-api/user";
 import { CollisionModel } from "../../../engine-shared/CollisionModel";
 import { HALF_TILE_SIZE_IN_COORDS, TILE_SIZE_IN_COORDS } from "../../../engine-shared/constants";
 import { Vector2D } from "../../../engine-shared/geom/Vector2D";

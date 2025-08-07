@@ -1,5 +1,5 @@
-import { Tools } from "gammaray-app/tools";
-import { UserFunctions } from "gammaray-app/user";
+import { Tools } from "../../../tmp-api/tools";
+import { UserFunctions } from "../../../tmp-api/user";
 import { Vector2D } from "../../engine-shared/geom/Vector2D";
 import { EntityTemplate } from "../../game-shared/entity/template/entity-template";
 import { Area } from "./Area";

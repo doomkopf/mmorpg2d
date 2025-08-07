@@ -853,11 +853,6 @@ function-bind@^1.1.1:
   resolved "https://registry.yarnpkg.com/function-bind/-/function-bind-1.1.1.tgz#a56899d3ea3c9bab874bb9773b7c5ede92f4895d"
   integrity sha512-yIovAzMX49sF8Yl58fSCWJ5svSLuaibPxXQJFLmBObTuCr0Mf1KiPopGM9NiFjiYBCbfaa2Fh6breQ6ANVTI0A==
 
-gammaray-app@^1.1.1:
-  version "1.1.1"
-  resolved "https://registry.yarnpkg.com/gammaray-app/-/gammaray-app-1.1.1.tgz#88d17e0a10b96fc7adf7f2efac3b95dca8d09c89"
-  integrity sha512-W7FtvebEOuzM+E1sCs6nUE67cXFaAqcYOaBQ9VR0qVdHrASIFVFQr/2PHuf8wGx0ZlSw/nD6UCrpAo8QzxDTRQ==
-
 gammaray-cli@^1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/gammaray-cli/-/gammaray-cli-1.0.0.tgz#346ae7f76ee15d912a5c862d93ef7b25ee15c60d"

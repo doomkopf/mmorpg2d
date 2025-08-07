@@ -1,4 +1,4 @@
-import { DeserializeEntity } from "gammaray-app/core";
+import { DeserializeEntity } from "../../../tmp-api/core";
 import { AllImagesInfo } from "./AllImagesInfo";
 
 export const allimagesinfoDeserializeEntity: DeserializeEntity<AllImagesInfo> = (id, entity) => {

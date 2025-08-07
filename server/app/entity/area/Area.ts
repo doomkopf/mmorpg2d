@@ -1,7 +1,7 @@
-import { JsonObject } from "gammaray-app/core";
-import { Lib } from "gammaray-app/lib";
-import { LogLevel, Logger } from "gammaray-app/log";
-import { UserFunctions } from "gammaray-app/user";
+import { JsonObject } from "../../../tmp-api/core";
+import { Lib } from "../../../tmp-api/lib";
+import { Logger, LogLevel } from "../../../tmp-api/log";
+import { UserFunctions } from "../../../tmp-api/user";
 import { mapAreaToDto } from "../../area-mapping";
 import { CORPSE_TIMEOUT_MS } from "../../contants";
 import { Vector2D } from "../../engine-shared/geom/Vector2D";

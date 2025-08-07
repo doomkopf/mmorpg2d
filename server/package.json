@@ -7,9 +7,7 @@
     "lint": "eslint ."
   },
   "license": "UNLICENSED",
-  "dependencies": {
-    "gammaray-app": "^1.1.1"
-  },
+  "dependencies": {},
   "devDependencies": {
     "eslint": "^9.7.0",
     "gammaray-cli": "^1.0.0",

@@ -1,4 +1,4 @@
-import { UserFunctions } from "gammaray-app/user";
+import { UserFunctions } from "../../../../tmp-api/user";
 import { Vector2D } from "../../../engine-shared/geom/Vector2D";
 import { Faction } from "../../../game-shared/entity/template/Faction";
 import { Area } from "../Area";

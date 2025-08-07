@@ -1,4 +1,4 @@
-import { EntityFunc, FuncVisibility, StatelessFunc } from "gammaray-app/core";
+import { EntityFunc, FuncVisibility, StatelessFunc } from "../../../tmp-api/core";
 import { mapNpcSpawnPointsToDto } from "../../area-mapping";
 import { Vector2D } from "../../engine-shared/geom/Vector2D";
 import { Area } from "../../entity/area/Area";

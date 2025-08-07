@@ -1,11 +1,11 @@
-import { EntityFunc, FuncVisibility, StatelessFunc } from "gammaray-app/core";
+import { EntityFunc, FuncVisibility, StatelessFunc } from "../../../tmp-api/core";
 import { AllImagesInfo, DEFAULT_IMAGE_INFOS_ENTITY_ID } from "../../entity/all-images-info/AllImagesInfo";
 import { SetImageNameRequest, SetImageNameResponse, StatusKey } from "../../game-shared/dto";
 
 export const setImageName: StatelessFunc<SetImageNameRequest> = {
   vis: FuncVisibility.pub,
-  func: (lib, params, ctx) => {
-    lib.entityFunc.invoke("allimagesinfo", "setImageName1", DEFAULT_IMAGE_INFOS_ENTITY_ID, params, ctx);
+  func: (lib, params) => {
+    lib.entityFunc.invoke("allimagesinfo", "setImageName1", DEFAULT_IMAGE_INFOS_ENTITY_ID, params);
   },
 };
 
