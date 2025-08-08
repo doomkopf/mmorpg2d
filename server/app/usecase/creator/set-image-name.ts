@@ -1,6 +1,7 @@
 import { EntityFunc, FuncVisibility, StatelessFunc } from "../../../tmp-api/core";
 import { AllImagesInfo, DEFAULT_IMAGE_INFOS_ENTITY_ID } from "../../entity/all-images-info/AllImagesInfo";
 import { SetImageNameRequest, SetImageNameResponse, StatusKey } from "../../game-shared/dto";
+import { sendResponseWithClientRequestId } from "../../tools";
 
 export const setImageName: StatelessFunc<SetImageNameRequest> = {
   vis: FuncVisibility.pub,
@@ -22,7 +23,7 @@ export const setImageName1: EntityFunc<AllImagesInfo, SetImageNameRequest> = {
       s: StatusKey.OK,
       name,
     };
-    ctx.sendResponse(response);
+    sendResponseWithClientRequestId(ctx, response)
 
     return info;
   },

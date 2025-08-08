@@ -1,3 +1,4 @@
+import { JsonObject, RequestContext } from "../tmp-api/core";
 import { MAX_POSITION_DEVIATION } from "./contants";
 import { roughlyEquals } from "./engine-shared/geom/math";
 import { Vector2D } from "./engine-shared/geom/Vector2D";
@@ -23,4 +24,11 @@ export function applyClientPosIfAcceptable(pos: Vector2D, posDto: Vector2DDto): 
 export function getEntityTemplate(id: string): EntityTemplate | null {
   const template = ENTITY_TEMPLATES.templates[id];
   return template?.template || null;
+}
+
+export function sendResponseWithClientRequestId(ctx: RequestContext, response: JsonObject) {
+  if (ctx.clientRequestId) {
+    response["gamrid"] = ctx.clientRequestId
+  }
+  ctx.sendResponse(response)
 }

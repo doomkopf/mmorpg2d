@@ -2,6 +2,7 @@ import { EntityFunc, FuncVisibility, StatelessFunc } from "../../../tmp-api/core
 import { AllImagesInfo, DEFAULT_IMAGE_INFOS_ENTITY_ID } from "../../entity/all-images-info/AllImagesInfo";
 import { Image } from "../../entity/image/Image";
 import { StatusKey, UploadImageRequest, UploadImageResponse } from "../../game-shared/dto";
+import { sendResponseWithClientRequestId } from "../../tools";
 
 export const uploadImage: StatelessFunc<UploadImageRequest> = {
   vis: FuncVisibility.pub,
@@ -38,7 +39,7 @@ export const uploadImage1: EntityFunc<Image, UploadImageRequest> = {
       imgId: id,
       isNew,
     };
-    ctx.sendResponse(response);
+    sendResponseWithClientRequestId(ctx, response)
 
     return image;
   },

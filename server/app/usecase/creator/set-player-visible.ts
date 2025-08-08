@@ -2,6 +2,7 @@ import { EntityFunc, FuncVisibility, StatelessFunc } from "../../../tmp-api/core
 import { Area } from "../../entity/area/Area";
 import { areaUseCaseValidations } from "../../entity/area/area-tools";
 import { STATUS_KEY, SetPlayerVisibleRequest, SetPlayerVisibleResponse, StatusKey } from "../../game-shared/dto";
+import { sendResponseWithClientRequestId } from "../../tools";
 import { userToArea } from "../tools/user-to-area";
 
 export const setPlayerVisible: StatelessFunc<SetPlayerVisibleRequest> = {
@@ -31,7 +32,7 @@ export const setPlayerVisible1: EntityFunc<Area, SetPlayerVisibleRequest> = {
       [STATUS_KEY]: StatusKey.OK,
       visible: attackable.isVisible,
     };
-    ctx.sendResponse(response);
+    sendResponseWithClientRequestId(ctx, response)
 
     return area;
   },

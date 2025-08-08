@@ -1,6 +1,6 @@
 import { FuncVisibility, StatelessFunc } from "../../../tmp-api/core";
 import { GetEntityTemplateRequest, GetEntityTemplateResponse, STATUS_KEY, StatusKey } from "../../game-shared/dto";
-import { getEntityTemplate } from "../../tools";
+import { getEntityTemplate, sendResponseWithClientRequestId } from "../../tools";
 
 export const getEntityTemplateFunc: StatelessFunc<GetEntityTemplateRequest> = {
   vis: FuncVisibility.pub,
@@ -9,6 +9,6 @@ export const getEntityTemplateFunc: StatelessFunc<GetEntityTemplateRequest> = {
       [STATUS_KEY]: StatusKey.OK,
       template: getEntityTemplate(params.id) || undefined,
     };
-    ctx.sendResponse(response);
+    sendResponseWithClientRequestId(ctx, response)
   },
 };

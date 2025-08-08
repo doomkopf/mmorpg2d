@@ -1,6 +1,7 @@
 import { EntityFunc, FuncVisibility, StatelessFunc } from "../../../tmp-api/core";
 import { AllImagesInfo, DEFAULT_IMAGE_INFOS_ENTITY_ID } from "../../entity/all-images-info/AllImagesInfo";
 import { GetAllImageInfosResponse } from "../../game-shared/dto";
+import { sendResponseWithClientRequestId } from "../../tools";
 
 export const getAllImageInfos: StatelessFunc<never> = {
   vis: FuncVisibility.pub,
@@ -16,13 +17,13 @@ export const getAllImageInfos1: EntityFunc<AllImagesInfo, never> = {
       const response: GetAllImageInfosResponse = {
         infos: {},
       };
-      ctx.sendResponse(response);
+      sendResponseWithClientRequestId(ctx, response)
       return;
     }
 
     const response: GetAllImageInfosResponse = {
       infos: info.readonlyImageInfos,
     };
-    ctx.sendResponse(response);
+    sendResponseWithClientRequestId(ctx, response)
   },
 };
