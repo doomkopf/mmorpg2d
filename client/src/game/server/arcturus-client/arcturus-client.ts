@@ -113,7 +113,7 @@ export class ArcturusClient {
     appId: string,
     entityType: string,
     entityId: string,
-    sessionId: string,
+    sessionId: string | undefined,
     requestId: string | null,
     requestBody: Json,
   ): Promise<void> {

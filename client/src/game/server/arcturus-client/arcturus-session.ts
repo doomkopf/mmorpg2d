@@ -54,7 +54,7 @@ export class ArcturusSession implements ArcturusClientListener {
       this.appId,
       entityType,
       entityId,
-      "", // no sessionId for now since for persistent sessions it is attached in server on login
+      undefined, // no sessionId for now since for persistent sessions it is attached in server on login
       requestId,
       json)
   }
