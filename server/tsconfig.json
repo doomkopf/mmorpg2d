@@ -12,7 +12,7 @@
     "noImplicitAny": true,
     "allowSyntheticDefaultImports": true,
     "experimentalDecorators": true,
-    "emitDecoratorMetadata": true
+    "skipLibCheck": true
   },
   "exclude": [
     "**/*.spec.ts"
