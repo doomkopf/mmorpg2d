@@ -1,4 +1,4 @@
 export interface AttackableTemplate {
-  maxHp: number
-  hp: number
+    maxHp: number
+    hp: number
 }

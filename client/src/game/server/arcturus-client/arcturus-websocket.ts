@@ -1,55 +1,55 @@
 import { WebsocketFactory } from "./arcturus-client"
 
 export interface ArcturusWebsocket {
-  isOpen(): boolean
+    isOpen(): boolean
 
-  send(data: string): void
+    send(data: string): void
 
-  close(): void
+    close(): void
 }
 
 export interface ArcturusWebsocketListener {
-  onOpen(): void
+    onOpen(): void
 
-  onClose(): void
+    onClose(): void
 
-  onError(): void
+    onError(): void
 
-  onMessage(data: string): void
+    onMessage(data: string): void
 }
 
 class BrowserWebsocket implements ArcturusWebsocket {
-  constructor(
-    private readonly ws: WebSocket,
-  ) {
-  }
+    constructor(
+        private readonly ws: WebSocket,
+    ) {
+    }
 
-  isOpen(): boolean {
-    return this.ws.readyState === WebSocket.OPEN
-  }
+    isOpen(): boolean {
+        return this.ws.readyState === WebSocket.OPEN
+    }
 
-  send(data: string): void {
-    this.ws.send(data)
-  }
+    send(data: string): void {
+        this.ws.send(data)
+    }
 
-  close(): void {
-    this.ws.close()
-  }
+    close(): void {
+        this.ws.close()
+    }
 }
 
 export const createBrowserArcturusWebsocket: WebsocketFactory = async (url, listener) => {
-  const ws = new WebSocket(url)
-  ws.onopen = () => {
-    listener.onOpen()
-  }
-  ws.onclose = () => {
-    listener.onClose()
-  }
-  ws.onerror = () => {
-    listener.onError()
-  }
-  ws.onmessage = (msg) => {
-    listener.onMessage(msg.data)
-  }
-  return new BrowserWebsocket(ws)
+    const ws = new WebSocket(url)
+    ws.onopen = () => {
+        listener.onOpen()
+    }
+    ws.onclose = () => {
+        listener.onClose()
+    }
+    ws.onerror = () => {
+        listener.onError()
+    }
+    ws.onmessage = (msg) => {
+        listener.onMessage(msg.data)
+    }
+    return new BrowserWebsocket(ws)
 }

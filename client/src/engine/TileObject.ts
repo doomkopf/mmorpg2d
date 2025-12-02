@@ -1,9 +1,9 @@
-import { AnimatedTile } from "./AnimatedTile";
+import { AnimatedTile } from "./AnimatedTile"
 
 export class TileObject {
-  constructor(
-    readonly anim: AnimatedTile,
-    readonly isWalkable: boolean,
-  ) {
-  }
+    constructor(
+        readonly anim: AnimatedTile,
+        readonly isWalkable: boolean,
+    ) {
+    }
 }

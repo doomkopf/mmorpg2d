@@ -17,6 +17,6 @@ export const VECTOR_UP_LEFT = new Vector2D(-1, -1)
 VECTOR_UP_LEFT.normalize()
 
 export enum ActorAnimation {
-  IDLE,
-  MOVE,
+    IDLE,
+    MOVE,
 }

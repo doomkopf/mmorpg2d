@@ -4,20 +4,20 @@ import { MessageHandler } from "../server/arcturus-client/arcturus-session"
 import { DespawnEntityDto } from "../shared/dto"
 
 export class DespawnEntityHandler implements MessageHandler {
-  constructor(
-    private readonly gameCtx: GameContext,
-  ) {
-  }
-
-  handle(json: Json): void {
-    const { area } = this.gameCtx
-    if (!area) {
-      console.error("No area")
-      return
+    constructor(
+        private readonly gameCtx: GameContext,
+    ) {
     }
 
-    const despawnEntityDto = json as DespawnEntityDto
+    handle(json: Json): void {
+        const { area } = this.gameCtx
+        if (!area) {
+            console.error("No area")
+            return
+        }
 
-    area.removeEntity(despawnEntityDto.id)
-  }
+        const despawnEntityDto = json as DespawnEntityDto
+
+        area.removeEntity(despawnEntityDto.id)
+    }
 }

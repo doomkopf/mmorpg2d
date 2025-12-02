@@ -1,5 +1,5 @@
 export interface AnimatedTile {
-  imgId: string | null
+    imgId: string | null
 
-  update(now: number): void
+    update(now: number): void
 }

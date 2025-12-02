@@ -4,151 +4,150 @@ const STATUS_SERVICE_NOT_AVAILABLE = "serviceNotAvailable"
 const RESPONSE_KEY_REQUEST_ID = "gamrid"
 
 export interface ArcturusSessionListener {
-  onConnected(): void
+    onConnected(): void
 
-  onDisconnected(): void
+    onDisconnected(): void
 
-  onConnectionRefused(): void
+    onConnectionRefused(): void
 }
 
 export interface MessageHandler {
-  handle(json: Json): void
+    handle(json: Json): void
 }
 
 export class ArcturusSession implements ArcturusClientListener {
-  private readonly responseServiceNotAvailable
+    private readonly responseServiceNotAvailable
 
-  private readonly client: ArcturusClient
+    private readonly client: ArcturusClient
 
-  private messageHandlers = new Map<string, MessageHandler>()
-  private readonly pendingCallbacks = new Map<string, (responseBody: Json) => void>()
+    private messageHandlers = new Map<string, MessageHandler>()
+    private readonly pendingCallbacks = new Map<string, (responseBody: Json) => void>()
 
-  constructor(
-    websocketFactory: WebsocketFactory,
-    private readonly generateUuid: () => string,
-    private readonly appId: string,
-    host: string,
-    port: number,
-    private readonly funcIdResponseKey: string,
-    statusKey: string,
-    private readonly sessionListener: ArcturusSessionListener,
-  ) {
-    this.responseServiceNotAvailable = { [statusKey]: STATUS_SERVICE_NOT_AVAILABLE }
+    constructor(
+        websocketFactory: WebsocketFactory,
+        private readonly generateUuid: () => string,
+        private readonly appId: string,
+        host: string,
+        port: number,
+        private readonly funcIdResponseKey: string,
+        statusKey: string,
+        private readonly sessionListener: ArcturusSessionListener,
+    ) {
+        this.responseServiceNotAvailable = { [statusKey]: STATUS_SERVICE_NOT_AVAILABLE }
 
-    this.client = new ArcturusClient(
-      host,
-      port,
-      websocketFactory,
-      this)
-  }
-
-  private sendDirect(
-    func: string,
-    entityType: string,
-    entityId: string,
-    requestId: string | null,
-    json: Json,
-  ) {
-    this.client.send(
-      func,
-      this.appId,
-      entityType,
-      entityId,
-      undefined, // no sessionId for now since for persistent sessions it is attached in server on login
-      requestId,
-      json)
-  }
-
-  onReceived(json: Json): void {
-    if (json.status === "internalError") {
-      console.error(`ArcApp error: service=${json.service}, uc=${json.uc}, msg=${json.msg}`)
+        this.client = new ArcturusClient(
+            host,
+            port,
+            websocketFactory,
+            this)
     }
 
-    const plainFuncId = json[this.funcIdResponseKey]
-    if (plainFuncId) {
-      const funcId = plainFuncId.toString() as string
-      const messageHandler = this.messageHandlers.get(funcId)
-      if (messageHandler) {
-        messageHandler.handle(json)
-        return
-      }
-      else {
-        console.warn(`No responseHandler found for func with id: ${funcId}`)
-      }
+    private sendDirect(
+        func: string,
+        entityType: string,
+        entityId: string,
+        requestId: string | null,
+        json: Json,
+    ) {
+        this.client.send(
+            func,
+            this.appId,
+            entityType,
+            entityId,
+            undefined, // no sessionId for now since for persistent sessions it is attached in server on login
+            requestId,
+            json)
     }
 
-    const requestId = json[RESPONSE_KEY_REQUEST_ID] as string
-    if (requestId) {
-      const callback = this.pendingCallbacks.get(requestId)
-      if (!callback) {
-        console.warn(`No pending callback found for requestId: ${requestId}`)
-        return
-      }
+    onReceived(json: Json): void {
+        if (json.status === "internalError") {
+            console.error(`ArcApp error: service=${json.service}, uc=${json.uc}, msg=${json.msg}`)
+        }
 
-      this.pendingCallbacks.delete(requestId)
+        const plainFuncId = json[this.funcIdResponseKey]
+        if (plainFuncId) {
+            const funcId = plainFuncId.toString() as string
+            const messageHandler = this.messageHandlers.get(funcId)
+            if (messageHandler) {
+                messageHandler.handle(json)
+                return
+            } else {
+                console.warn(`No responseHandler found for func with id: ${funcId}`)
+            }
+        }
 
-      callback(json)
-      return
+        const requestId = json[RESPONSE_KEY_REQUEST_ID] as string
+        if (requestId) {
+            const callback = this.pendingCallbacks.get(requestId)
+            if (!callback) {
+                console.warn(`No pending callback found for requestId: ${requestId}`)
+                return
+            }
+
+            this.pendingCallbacks.delete(requestId)
+
+            callback(json)
+            return
+        }
+
+        if (this.pendingCallbacks.size === 1) {
+            const [callback] = this.pendingCallbacks.values()
+            this.pendingCallbacks.clear()
+
+            callback(json)
+            return
+        }
+
+        console.warn(`Received unidentifiable response: ${JSON.stringify(json)}`)
     }
 
-    if (this.pendingCallbacks.size === 1) {
-      const [callback] = this.pendingCallbacks.values()
-      this.pendingCallbacks.clear()
-
-      callback(json)
-      return
+    private clearPendingCallbacks() {
+        const callbacks = this.pendingCallbacks
+        this.pendingCallbacks.clear()
+        callbacks.forEach(callback => callback(this.responseServiceNotAvailable))
     }
 
-    console.warn(`Received unidentifiable response: ${JSON.stringify(json)}`)
-  }
+    onConnectionRefused(): void {
+        this.clearPendingCallbacks()
+        this.sessionListener.onConnectionRefused()
+    }
 
-  private clearPendingCallbacks() {
-    const callbacks = this.pendingCallbacks
-    this.pendingCallbacks.clear()
-    callbacks.forEach(callback => callback(this.responseServiceNotAvailable))
-  }
+    onConnected(): void {
+        this.sessionListener.onConnected()
+    }
 
-  onConnectionRefused(): void {
-    this.clearPendingCallbacks()
-    this.sessionListener.onConnectionRefused()
-  }
+    onDisconnected(): void {
+        this.clearPendingCallbacks()
+        this.sessionListener.onDisconnected()
+    }
 
-  onConnected(): void {
-    this.sessionListener.onConnected()
-  }
+    addMessageHandler(func: string, messageHandler: MessageHandler): void {
+        this.messageHandlers.set(func, messageHandler)
+    }
 
-  onDisconnected(): void {
-    this.clearPendingCallbacks()
-    this.sessionListener.onDisconnected()
-  }
+    request(func: string, entityType: string, entityId: string, requestBody: Json, callback: (responseBody: Json) => void): void {
+        const requestId = this.generateUuid()
+        this.pendingCallbacks.set(requestId, callback)
+        this.sendDirect(func, entityType, entityId, requestId, requestBody)
+    }
 
-  addMessageHandler(func: string, messageHandler: MessageHandler): void {
-    this.messageHandlers.set(func, messageHandler)
-  }
+    async requestSync(func: string, entityType: string, entityId: string, requestBody: Json): Promise<Json> {
+        return new Promise(resolve => {
+            this.request(func, entityType, entityId, requestBody, responseBody => {
+                resolve(responseBody)
+            })
+        })
+    }
 
-  request(func: string, entityType: string, entityId: string, requestBody: Json, callback: (responseBody: Json) => void): void {
-    const requestId = this.generateUuid()
-    this.pendingCallbacks.set(requestId, callback)
-    this.sendDirect(func, entityType, entityId, requestId, requestBody)
-  }
+    send(func: string, entityType: string, entityId: string, requestBody: Json): void {
+        this.sendDirect(func, entityType, entityId, null, requestBody)
+    }
 
-  async requestSync(func: string, entityType: string, entityId: string, requestBody: Json): Promise<Json> {
-    return new Promise(resolve => {
-      this.request(func, entityType, entityId, requestBody, responseBody => {
-        resolve(responseBody)
-      })
-    })
-  }
+    isConnected(): boolean {
+        return this.client.isConnected()
+    }
 
-  send(func: string, entityType: string, entityId: string, requestBody: Json): void {
-    this.sendDirect(func, entityType, entityId, null, requestBody)
-  }
-
-  isConnected(): boolean {
-    return this.client.isConnected()
-  }
-
-  close(): void {
-    this.client.close()
-  }
+    close(): void {
+        this.client.close()
+    }
 }

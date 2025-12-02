@@ -5,20 +5,20 @@ import { MessageHandler } from "../server/arcturus-client/arcturus-session"
 import { SpawnEntityDto } from "../shared/dto"
 
 export class SpawnEntityHandler implements MessageHandler {
-  constructor(
-    private readonly gameCtx: GameContext,
-  ) {
-  }
-
-  handle(json: Json): void {
-    const { area } = this.gameCtx
-    if (!area) {
-      console.error("No area")
-      return
+    constructor(
+        private readonly gameCtx: GameContext,
+    ) {
     }
 
-    const spawnEntityDto = json as SpawnEntityDto
+    handle(json: Json): void {
+        const { area } = this.gameCtx
+        if (!area) {
+            console.error("No area")
+            return
+        }
 
-    createEntityFromDto(area.engineArea.entities, area.entities, spawnEntityDto.entity)
-  }
+        const spawnEntityDto = json as SpawnEntityDto
+
+        createEntityFromDto(area.engineArea.entities, area.entities, spawnEntityDto.entity)
+    }
 }

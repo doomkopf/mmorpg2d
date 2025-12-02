@@ -1,6 +1,6 @@
 export class User {
-  constructor(
-    public areaId: string | null,
-  ) {
-  }
+    constructor(
+        public areaId: string | null,
+    ) {
+    }
 }

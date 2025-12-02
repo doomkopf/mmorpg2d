@@ -1,5 +1,5 @@
 export interface AttackerTemplate {
-  damage: number
-  attackIntervalMs: number
-  attackRange: number
+    damage: number
+    attackIntervalMs: number
+    attackRange: number
 }

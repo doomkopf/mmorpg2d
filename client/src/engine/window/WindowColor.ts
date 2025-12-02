@@ -1,5 +1,5 @@
 export interface WindowColor {
-  r: number
-  g: number
-  b: number
+    r: number
+    g: number
+    b: number
 }

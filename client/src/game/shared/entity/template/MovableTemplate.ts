@@ -1,3 +1,3 @@
 export interface MovableTemplate {
-  speed: number
+    speed: number
 }

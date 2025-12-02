@@ -1,3 +1,3 @@
 export interface AnimationTemplate {
-  imageIds: string[]
+    imageIds: string[]
 }

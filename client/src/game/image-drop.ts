@@ -1,41 +1,41 @@
 export interface ImageDropListener {
-  onImageDrop(dataUrl: string, x: number, y: number): void
+    onImageDrop(dataUrl: string, x: number, y: number): void
 }
 
 let listener: ImageDropListener | null = null
 
 export function registerImageDropListener(l: ImageDropListener): void {
-  listener = l
+    listener = l
 }
 
 const dropzone = document.getElementById("frontbuffer") as HTMLElement
 
 dropzone.addEventListener("dragenter", event => {
-  event.preventDefault()
+    event.preventDefault()
 })
 
 dropzone.addEventListener("dragleave", event => {
-  event.preventDefault()
+    event.preventDefault()
 })
 
 dropzone.addEventListener("dragover", event => {
-  event.preventDefault()
+    event.preventDefault()
 })
 
 dropzone.addEventListener("drop", event => {
-  event.preventDefault()
+    event.preventDefault()
 
-  if (!event.dataTransfer) {
-    return
-  }
-
-  const file = event.dataTransfer.files[0]
-  const reader = new FileReader()
-  reader.readAsDataURL(file)
-
-  reader.addEventListener("loadend", () => {
-    if (listener && reader.result) {
-      listener.onImageDrop(reader.result.toString(), event.x, event.y)
+    if (!event.dataTransfer) {
+        return
     }
-  })
+
+    const file = event.dataTransfer.files[0]
+    const reader = new FileReader()
+    reader.readAsDataURL(file)
+
+    reader.addEventListener("loadend", () => {
+        if (listener && reader.result) {
+            listener.onImageDrop(reader.result.toString(), event.x, event.y)
+        }
+    })
 })

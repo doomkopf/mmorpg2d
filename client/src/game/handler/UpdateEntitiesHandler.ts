@@ -5,22 +5,22 @@ import { MessageHandler } from "../server/arcturus-client/arcturus-session"
 import { UpdateEntitiesDto } from "../shared/dto"
 
 export class UpdateEntitiesHandler implements MessageHandler {
-  constructor(
-    private readonly gameCtx: GameContext,
-  ) {
-  }
-
-  handle(json: Json): void {
-    const { area } = this.gameCtx
-    if (!area) {
-      console.error("No area")
-      return
+    constructor(
+        private readonly gameCtx: GameContext,
+    ) {
     }
 
-    const updateEntitiesDto = json as UpdateEntitiesDto
+    handle(json: Json): void {
+        const { area } = this.gameCtx
+        if (!area) {
+            console.error("No area")
+            return
+        }
 
-    for (const dto of updateEntitiesDto.entities) {
-      updateEntityFromDto(area.engineArea.entities, area.entities, dto)
+        const updateEntitiesDto = json as UpdateEntitiesDto
+
+        for (const dto of updateEntitiesDto.entities) {
+            updateEntityFromDto(area.engineArea.entities, area.entities, dto)
+        }
     }
-  }
 }
