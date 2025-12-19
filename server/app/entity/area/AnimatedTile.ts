@@ -1,3 +1,5 @@
+import { JsonObject } from "../../../tmp-api/core"
+
 export class AnimatedTile {
     constructor(
         private readonly imgIds: (string | null)[],
@@ -5,6 +7,10 @@ export class AnimatedTile {
         if (!imgIds.length) {
             throw "Animated tile must have at least one image"
         }
+    }
+
+    static fromObject(obj: JsonObject): AnimatedTile {
+        return new AnimatedTile(obj.imgIds)
     }
 
     get readonlyImageIds() {

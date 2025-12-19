@@ -1,6 +1,6 @@
 export class EntityComponents<C> {
     constructor(
-        private readonly components: { [id: string]: C },
+        private readonly components: Record<string, C>,
     ) {
     }
 

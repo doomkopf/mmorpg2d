@@ -1,12 +1,21 @@
+import { JsonObject } from "../../../tmp-api/core"
 import { Tools } from "../../../tmp-api/tools"
 import { UserFunctions } from "../../../tmp-api/user"
+import { mapObjectValues } from "../../tools"
 import { Area } from "./Area"
 import { NpcSpawnPoint } from "./NpcSpawnPoint"
 
 export class NpcSpawnPoints {
     constructor(
-        private readonly npcSpawnPoints: { [id: string]: NpcSpawnPoint },
+        private readonly npcSpawnPoints: Record<string, NpcSpawnPoint>,
     ) {
+    }
+
+    static fromObject(obj: JsonObject): NpcSpawnPoints {
+        return new NpcSpawnPoints(mapObjectValues(
+            obj.npcSpawnPoints as Record<string, JsonObject>,
+            raw => NpcSpawnPoint.fromObject(raw),
+        ))
     }
 
     addNpcSpawnPoint(p: NpcSpawnPoint, tools: Tools): string {

@@ -21,6 +21,7 @@ export function createEntityFromDto(engineEntities: EntitySystem, gameEntities: 
     if (dto.movable) {
         const movable = new Movable(
             pos,
+            new Vector2D(0, 0),
             dto.movable.isMoving,
             new Vector2D(dto.movable.dir.x, dto.movable.dir.y),
             dto.movable.speed,

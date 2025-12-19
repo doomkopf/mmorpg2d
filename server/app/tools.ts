@@ -32,3 +32,7 @@ export function sendResponseWithClientRequestId(ctx: RequestContext, response: J
     }
     ctx.sendResponse(response)
 }
+
+export function mapObjectValues<T, U>(obj: Record<string, T>, func: (v: T, k: string) => U): Record<string, U> {
+    return Object.fromEntries(Object.entries(obj).map(([k, v]) => [k, func(v, k)]))
+}

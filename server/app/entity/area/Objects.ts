@@ -1,3 +1,4 @@
+import { JsonObject } from "../../../tmp-api/core"
 import { CollisionModel } from "../../engine-shared/CollisionModel"
 import { TileCoord } from "../../engine-shared/TileCoord"
 import { AnimatedTile } from "./AnimatedTile"
@@ -10,6 +11,18 @@ export class Objects {
         private readonly objects: (TileObject | null)[][],
     ) {
         this.collisionModel = new CollisionModel(this)
+    }
+
+    static fromObject(obj: JsonObject): Objects {
+        for (const line of obj.objects) {
+            for (let i = 0; i < line.length; i++) {
+                const obj = line[i]
+                if (obj) {
+                    line[i] = TileObject.fromObject(obj)
+                }
+            }
+        }
+        return new Objects(obj.objects)
     }
 
     get readonlyArray() {

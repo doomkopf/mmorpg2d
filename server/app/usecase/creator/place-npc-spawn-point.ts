@@ -32,6 +32,8 @@ export const placeNpcSpawnPoint1: EntityFunc<Area, PlaceNpcSpawnPointRequest> = 
                 params.templateId,
                 ENTITY_TEMPLATES.templates[params.templateId].template,
                 new Vector2D(params.pos.x, params.pos.y),
+                null,
+                0,
             ),
             lib.tools)
 

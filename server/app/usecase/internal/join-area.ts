@@ -51,7 +51,7 @@ export const joinArea2: EntityFunc<Area, JoinArea> = {
     vis: FuncVisibility.pri,
     func: (area, id, lib, params) => {
         if (!area) {
-            area = createDefaultArea(id)
+            area = createDefaultArea()
         }
 
         area.update(lib, id)

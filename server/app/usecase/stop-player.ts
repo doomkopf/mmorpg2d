@@ -22,7 +22,7 @@ export const stopPlayer1: EntityFunc<Area, StopPlayerRequest> = {
         area.update(lib, id)
 
         if (!areaUseCaseValidations(area, ctx.requestingUserId)) {
-            return
+            return area
         }
 
         const pos = area.entities.positionables.get(ctx.requestingUserId)
@@ -31,5 +31,7 @@ export const stopPlayer1: EntityFunc<Area, StopPlayerRequest> = {
         const useClientPos = applyClientPosIfAcceptable(pos, params.pos)
 
         movable.stop(ctx.requestingUserId, area, lib.user, useClientPos ? ctx.requestingUserId : null)
+
+        return area
     },
 }

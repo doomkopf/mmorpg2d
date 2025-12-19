@@ -1,19 +1,28 @@
+import { JsonObject } from "../../../../tmp-api/core"
 import { UserFunctions } from "../../../../tmp-api/user"
 import { CollisionModel } from "../../../engine-shared/CollisionModel"
 import { HALF_TILE_SIZE_IN_COORDS, TILE_SIZE_IN_COORDS } from "../../../engine-shared/constants"
 import { Vector2D } from "../../../engine-shared/geom/Vector2D"
 import { EntityDiedDto, UseCaseId } from "../../../game-shared/dto"
 import { Area } from "../Area"
+import { EntitySystem } from "./EntitySystem"
 
 export class Attackable {
-    private diedAtTs = 0
-
     constructor(
-        readonly pos: Vector2D,
         readonly maxHp: number,
         private hp: number,
         public isVisible: boolean,
+        private diedAtTs: number,
     ) {
+    }
+
+    static fromObject(obj: JsonObject): Attackable {
+        return new Attackable(
+            obj.maxHp,
+            obj.hp,
+            obj.isVisible,
+            obj.diedAtTs,
+        )
     }
 
     get hitpoints(): number {
@@ -49,14 +58,15 @@ export class Attackable {
         }
     }
 
-    bounceAwayFrom(pos: Vector2D, collisionModel: CollisionModel): void {
-        const v = this.pos.subtract(pos)
+    bounceAwayFrom(fromPos: Vector2D, id: string, collisionModel: CollisionModel, entities: EntitySystem): void {
+        const pos = entities.positionables.get(id)
+        const v = pos.subtract(fromPos)
         v.normalize()
         v.scale(TILE_SIZE_IN_COORDS + HALF_TILE_SIZE_IN_COORDS)
 
-        const origin = this.pos.copy()
-        this.pos.add(v)
+        const origin = pos.copy()
+        pos.add(v)
 
-        collisionModel.alterDestination(origin, this.pos)
+        collisionModel.alterDestination(origin, pos)
     }
 }

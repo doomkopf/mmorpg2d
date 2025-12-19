@@ -3,10 +3,9 @@ import { GLOBAL_SPEED_FACTOR } from "../constants"
 import { Vector2D } from "../geom/Vector2D"
 
 export class Movable {
-    private readonly moveV = new Vector2D(0, 0)
-
     constructor(
         private readonly pos: Vector2D,
+        private readonly moveV: Vector2D,
         private moving: boolean,
         public dir: Vector2D,
         private speed: number,

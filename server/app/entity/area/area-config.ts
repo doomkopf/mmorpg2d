@@ -3,7 +3,6 @@ import { Lib } from "../../../tmp-api/lib"
 import { DEFAULT_AREA_HEIGHT, DEFAULT_AREA_WIDTH } from "../../contants"
 import { Air } from "./Air"
 import { Area } from "./Area"
-import { areaCoordsFromId } from "./area-tools"
 import { createEmptyEntitySystem } from "./entity/EntitySystem"
 import { Floor } from "./Floor"
 import { NpcSpawnPoints } from "./NpcSpawnPoints"
@@ -11,7 +10,7 @@ import { Objects } from "./Objects"
 import { SurroundingAreas } from "./SurroundingAreas"
 import { TileObject } from "./TileObject"
 
-export function createDefaultArea(id: EntityId): Area {
+export function createDefaultArea(): Area {
     const floor: string[][] = []
     for (let y = 0; y < DEFAULT_AREA_HEIGHT; y++) {
         const line: string[] = []
@@ -39,16 +38,15 @@ export function createDefaultArea(id: EntityId): Area {
         }
     }
 
-    const areaCoords = areaCoordsFromId(id)
-
     return new Area(
-        areaCoords.x, areaCoords.y,
         new Floor(floor),
         new Objects(objects),
         new Air(air),
         new NpcSpawnPoints({}),
         createEmptyEntitySystem(),
         new SurroundingAreas(),
+        [],
+        Date.now(),
     )
 }
 

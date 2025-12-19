@@ -1,6 +1,6 @@
 import { allimagesinfoDeserializeEntity } from "./app/entity/all-images-info/all-images-info-config"
 import { areaInterval } from "./app/entity/area/area-config"
-import { areaDeserializeEntity, areaSerializeEntity } from "./app/entity/area/area-persistency"
+import { areaDeserializeEntity } from "./app/entity/area/area-persistency"
 import { UseCaseId } from "./app/game-shared/dto"
 import { attack, attack1 } from "./app/usecase/attack"
 import { drawAir, drawAir1 } from "./app/usecase/creator/draw-air"
@@ -61,7 +61,6 @@ const rpg: GammarayApp = {
         },
         area: {
             currentVersion: 1,
-            serializeEntity: areaSerializeEntity,
             deserializeEntity: areaDeserializeEntity,
             func: {
                 attack1,

@@ -12,8 +12,8 @@ import { DespawnEntityDto, JoinAreaDto, SpawnEntityDto, UseCaseId } from "../../
 import { EntityTemplate } from "../../game-shared/entity/template/entity-template"
 import { startJoinArea } from "../../usecase/internal/join-area"
 import { Air } from "./Air"
-import { areaId, oppositeOfSide } from "./area-tools"
-import { EntitySystem } from "./entity/EntitySystem"
+import { areaCoordsFromId, areaId, oppositeOfSide } from "./area-tools"
+import { createEmptyEntitySystem, EntitySystem } from "./entity/EntitySystem"
 import { Floor } from "./Floor"
 import { NpcSpawnPoints } from "./NpcSpawnPoints"
 import { Objects } from "./Objects"
@@ -27,20 +27,29 @@ export enum JoinAreaSide {
 }
 
 export class Area {
-    private lastUpdateTs = Date.now()
-
-    private readonly users = new Set<string>()
-
     constructor(
-        readonly x: number,
-        readonly y: number,
         readonly floor: Floor,
         readonly objects: Objects,
         readonly air: Air,
         readonly npcSpawnPoints: NpcSpawnPoints,
         readonly entities: EntitySystem,
         readonly surroundingAreas: SurroundingAreas,
+        private readonly users: string[],
+        private lastUpdateTs: number,
     ) {
+    }
+
+    static fromObject(obj: JsonObject): Area {
+        return new Area(
+            Floor.fromObject(obj.floor),
+            Objects.fromObject(obj.objects),
+            Air.fromObject(obj.air),
+            NpcSpawnPoints.fromObject(obj.npcSpawnPoints),
+            obj.entities ? EntitySystem.fromObject(obj.entities) : createEmptyEntitySystem(),
+            new SurroundingAreas(),
+            obj.users,
+            obj.lastUpdateTs ? obj.lastUpdateTs : 0,
+        )
     }
 
     update(lib: Lib, id: string) {
@@ -63,21 +72,22 @@ export class Area {
         const result = this.surroundingAreas.checkPlayerOnLeaveTile(this.entities)
         if (result) {
             this.removeUser(result.userId, id, lib.user, lib.log)
-            startJoinArea(lib.entityFunc, result.userId, this.areaIdForSide(result.side), oppositeOfSide(result.side))
+            startJoinArea(lib.entityFunc, result.userId, this.areaIdForSide(result.side, id), oppositeOfSide(result.side))
         }
     }
 
-    private areaIdForSide(side: JoinAreaSide): string {
+    private areaIdForSide(side: JoinAreaSide, id: string): string {
+        const areaCoords = areaCoordsFromId(id)
         switch (side) {
             case JoinAreaSide.LEFT:
-                return areaId(this.x - 1, this.y)
+                return areaId(areaCoords.x - 1, areaCoords.y)
             case JoinAreaSide.TOP:
             default:
-                return areaId(this.x, this.y - 1)
+                return areaId(areaCoords.x, areaCoords.y - 1)
             case JoinAreaSide.RIGHT:
-                return areaId(this.x + 1, this.y)
+                return areaId(areaCoords.x + 1, areaCoords.y)
             case JoinAreaSide.BOTTOM:
-                return areaId(this.x, this.y + 1)
+                return areaId(areaCoords.x, areaCoords.y + 1)
         }
     }
 
@@ -95,11 +105,13 @@ export class Area {
     }
 
     hasUser(userId: string): boolean {
-        return this.users.has(userId)
+        return this.users.indexOf(userId) !== -1
     }
 
     joinUser(userFunctions: UserFunctions, log: Logger, userId: string, areaId: string, side?: JoinAreaSide): void {
-        this.users.add(userId)
+        if (!this.hasUser(userId)) {
+            this.users.push(userId)
+        }
 
         let pos: Vector2D
 
@@ -128,7 +140,7 @@ export class Area {
     }
 
     removeUser(userId: string, areaId: string, userFunctions: UserFunctions, log: Logger): void {
-        this.users.delete(userId)
+        this.users.splice(this.users.indexOf(userId), 1)
         this.removeEntity(userId, userFunctions, userId)
 
         log.log(LogLevel.INFO, `User=${userId} left area=${areaId}`)

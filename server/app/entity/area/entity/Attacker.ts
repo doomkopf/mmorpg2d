@@ -1,11 +1,12 @@
+import { JsonObject } from "../../../../tmp-api/core"
 import { UserFunctions } from "../../../../tmp-api/user"
 import { MOVABLE_BOUNDING_RADIUS } from "../../../engine-shared/constants"
-import { Movable } from "../../../engine-shared/entity/Movable"
 import { Vector2D } from "../../../engine-shared/geom/Vector2D"
 import { attackableToDto } from "../../../entity-mapping"
 import { EntityAttackedDto, UpdateEntitiesDto, UseCaseId } from "../../../game-shared/dto"
 import { Area } from "../Area"
 import { Attackable } from "./Attackable"
+import { EntitySystem } from "./EntitySystem"
 
 enum Direction {
     DOWN,
@@ -15,15 +16,21 @@ enum Direction {
 }
 
 export class Attacker {
-    private lastAttackTs = 0
-
     constructor(
-        private readonly pos: Vector2D,
-        private readonly movable: Movable,
         private readonly damage: number,
         readonly attackIntervalMs: number,
         readonly attackRange: number,
+        private lastAttackTs: number,
     ) {
+    }
+
+    static fromObject(obj: JsonObject): Attacker {
+        return new Attacker(
+            obj.damage,
+            obj.attackIntervalMs,
+            obj.attackRange,
+            obj.lastAttackTs,
+        )
     }
 
     attack(id: string, area: Area, userFunctions: UserFunctions, userId: string | null): void {
@@ -42,20 +49,24 @@ export class Attacker {
 
         const hitAttackables: { id: string, attackable: Attackable }[] = []
 
-        const dir = this.determineDirectionOf(this.movable.dir)
+        const movable = area.entities.movables.get(id)
+        const dir = this.determineDirectionOf(movable.movable.dir)
 
         area.entities.attackables.iterate((attackableId, attackable) => {
             if (attackableId === id) {
                 return
             }
 
-            if (this.isInAttackRangeToPos(attackable.pos)) {
-                if (dir === Direction.DOWN && attackable.pos.y > this.pos.y
-                    || dir === Direction.UP && attackable.pos.y < this.pos.y
-                    || dir === Direction.LEFT && attackable.pos.x < this.pos.x
-                    || dir === Direction.RIGHT && attackable.pos.x > this.pos.x) {
+            const attackablePos = area.entities.positionables.get(attackableId)
+            const pos = area.entities.positionables.get(id)
+
+            if (this.isInAttackRangeToPos(attackablePos, id, area.entities)) {
+                if (dir === Direction.DOWN && attackablePos.y > pos.y
+                    || dir === Direction.UP && attackablePos.y < pos.y
+                    || dir === Direction.LEFT && attackablePos.x < pos.x
+                    || dir === Direction.RIGHT && attackablePos.x > pos.x) {
                     attackable.gainDamage(this.damage, attackableId, area, userFunctions)
-                    attackable.bounceAwayFrom(this.pos, area.objects.currentCollisionModel)
+                    attackable.bounceAwayFrom(pos, attackableId, area.objects.currentCollisionModel, area.entities)
 
                     hitAttackables.push({ id: attackableId, attackable })
                 }
@@ -67,7 +78,7 @@ export class Attacker {
             entities: hitAttackables.map(att => {
                 return {
                     id: att.id,
-                    pos: att.attackable.pos,
+                    pos: area.entities.positionables.get(att.id),
                     attackable: attackableToDto(att.attackable),
                 }
             }),
@@ -76,8 +87,8 @@ export class Attacker {
         area.sendToAllExcept(userFunctions, updateEntities, null)
     }
 
-    isInAttackRangeToPos(pos: Vector2D): boolean {
-        return pos.distanceTo(this.pos) <= this.attackRange + MOVABLE_BOUNDING_RADIUS
+    isInAttackRangeToPos(pos: Vector2D, id: string, entities: EntitySystem): boolean {
+        return pos.distanceTo(entities.positionables.get(id)) <= this.attackRange + MOVABLE_BOUNDING_RADIUS
     }
 
     private determineDirectionOf(v: Vector2D): Direction {

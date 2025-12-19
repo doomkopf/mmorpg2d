@@ -1,3 +1,4 @@
+import { JsonObject } from "../../../tmp-api/core"
 import { AnimatedTile } from "./AnimatedTile"
 
 export class TileObject {
@@ -5,5 +6,12 @@ export class TileObject {
         readonly anim: AnimatedTile,
         readonly isWalkable: boolean,
     ) {
+    }
+
+    static fromObject(obj: JsonObject): TileObject {
+        return new TileObject(
+            AnimatedTile.fromObject(obj.anim),
+            obj.isWalkable,
+        )
     }
 }

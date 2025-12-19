@@ -77,6 +77,10 @@ export class ImageManager implements ImageProvider, ImageDropListener, ItemSelec
     }
 
     async retrieveImage(id: string): Promise<string | undefined> {
+        if (!id || id === "") {
+            return
+        }
+
         const url = this.map.get(id)
         if (url) {
             return url

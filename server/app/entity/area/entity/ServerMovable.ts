@@ -1,3 +1,4 @@
+import { JsonObject } from "../../../../tmp-api/core"
 import { UserFunctions } from "../../../../tmp-api/user"
 import { Movable } from "../../../engine-shared/entity/Movable"
 import { Vector2D } from "../../../engine-shared/geom/Vector2D"
@@ -6,9 +7,19 @@ import { Area } from "../Area"
 
 export class ServerMovable {
     constructor(
-        private readonly pos: Vector2D,
         readonly movable: Movable,
     ) {
+    }
+
+    static fromObject(obj: JsonObject, pos: Vector2D): ServerMovable {
+        const movable = obj.movable
+        return new ServerMovable(new Movable(
+            pos,
+            new Vector2D(movable.moveV.x, movable.moveV.y),
+            movable.moving,
+            new Vector2D(movable.dir.x, movable.dir.y),
+            movable.speed,
+        ))
     }
 
     lookInDirectionTo(x: number, y: number, id: string, area: Area, userFunctions: UserFunctions, sendToExceptUserId: string | null): void {
@@ -41,7 +52,7 @@ export class ServerMovable {
             uc: UseCaseId.UPDATE_ENTITIES,
             entities: [{
                 id,
-                pos: this.pos,
+                pos: area.entities.positionables.get(id),
                 movable: {
                     dir: this.movable.dir,
                     speed: this.movable.currentSpeed,

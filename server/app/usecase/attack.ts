@@ -24,5 +24,7 @@ export const attack1: EntityFunc<Area, never> = {
         area.update(lib, id)
 
         area.entities.attackers.get(ctx.requestingUserId).attack(ctx.requestingUserId, area, lib.user, ctx.requestingUserId)
+
+        return area
     },
 }

@@ -1,39 +1,35 @@
+import { JsonObject } from "../../../../tmp-api/core"
 import { UserFunctions } from "../../../../tmp-api/user"
 import { Vector2D } from "../../../engine-shared/geom/Vector2D"
 import { Faction } from "../../../game-shared/entity/template/Faction"
 import { Area } from "../Area"
-import { Attackable } from "./Attackable"
-import { Attacker } from "./Attacker"
 import { EntitySystem } from "./EntitySystem"
-import { ServerMovable } from "./ServerMovable"
 
-interface Target {
-    id: string
-    att: Attackable
-}
-
-const IDLE_SPEED = 5
+export const IDLE_SPEED = 5
 
 export class MovableAttacker {
-    private readonly normalSpeed: number
-
-    private idlingAroundSinceTs = 0
-
-    private target: Target | null = null
-
     constructor(
-        private readonly pos: Vector2D,
-        private readonly movable: ServerMovable,
-        private readonly attacker: Attacker,
+        private readonly normalSpeed: number,
         private readonly viewRange: number,
-        private readonly attackable: Attackable | null,
+        private idlingSinceTs: number,
+        private targetId: string | null,
     ) {
-        this.normalSpeed = movable.movable.currentSpeed
-        movable.movable.changeSpeed(IDLE_SPEED)
+    }
+
+    static fromObject(obj: JsonObject): MovableAttacker {
+        return new MovableAttacker(
+            obj.normalSpeed,
+            obj.viewRange,
+            obj.idlingSinceTs,
+            obj.targetId,
+        )
     }
 
     update(id: string, area: Area, userFunctions: UserFunctions): void {
-        if (this.attackable && !this.attackable.isAlive) {
+        const entities = area.entities
+
+        const attackable = entities.attackables.get(id)
+        if (attackable && !attackable.isAlive) {
             this.stopIfMoving(id, area, userFunctions)
             return
         }
@@ -42,45 +38,49 @@ export class MovableAttacker {
             return
         }
 
+        const movable = entities.movables.get(id)
+
         // determine target
-        if (this.target) {
-            const att = area.entities.attackables.get(this.target.id)
-            if (!this.target.att.isAlive || !att || att !== this.target.att) {
-                this.target = null
+        if (this.targetId) {
+            const targetAttackable = area.entities.attackables.get(this.targetId)
+            if (!targetAttackable || !targetAttackable.isAlive) {
+                this.targetId = null
                 this.stopIfMoving(id, area, userFunctions)
-                this.movable.changeSpeed(IDLE_SPEED, id, area, userFunctions, null)
+                movable.changeSpeed(IDLE_SPEED, id, area, userFunctions, null)
                 return
             }
         } else {
-            this.target = this.findAttackable(id, area.entities)
-            if (!this.target) {
+            this.targetId = this.findAttackableId(id, entities)
+            if (!this.targetId) {
                 // move or stand around randomly
                 const now = Date.now()
-                if (now - this.idlingAroundSinceTs > 3000) {
+                if (now - this.idlingSinceTs > 3000) {
                     if (Math.random() < 0.5) {
-                        this.idlingAroundSinceTs = now
+                        this.idlingSinceTs = now
                         const v = new Vector2D(Math.random() - 0.5, Math.random() - 0.5)
                         v.normalize()
-                        this.movable.moveInDirection(v, id, area, userFunctions, null)
+                        movable.moveInDirection(v, id, area, userFunctions, null)
                     } else {
                         this.stopIfMoving(id, area, userFunctions)
                     }
                 }
                 return
             } else {
-                this.movable.changeSpeed(this.normalSpeed, id, area, userFunctions, null)
+                movable.changeSpeed(this.normalSpeed, id, area, userFunctions, null)
             }
         }
 
         // determine whether to attack or move
-        if (this.attacker.isInAttackRangeToPos(this.target.att.pos)) {
+        const targetPos = entities.positionables.get(this.targetId)
+        const attacker = entities.attackers.get(id)
+        if (attacker.isInAttackRangeToPos(targetPos, id, entities)) {
             this.stopIfMoving(id, area, userFunctions)
-            this.movable.lookInDirectionTo(this.target.att.pos.x, this.target.att.pos.y, id, area, userFunctions, null)
-            this.attacker.attack(id, area, userFunctions, null)
+            movable.lookInDirectionTo(targetPos.x, targetPos.y, id, area, userFunctions, null)
+            attacker.attack(id, area, userFunctions, null)
         } else {
-            this.movable.moveInDirectionTo(
-                this.target.att.pos.x,
-                this.target.att.pos.y,
+            movable.moveInDirectionTo(
+                targetPos.x,
+                targetPos.y,
                 id,
                 area,
                 userFunctions,
@@ -89,7 +89,7 @@ export class MovableAttacker {
         }
     }
 
-    private findAttackable(id: string, entities: EntitySystem): Target | null {
+    private findAttackableId(id: string, entities: EntitySystem): string | null {
         for (const attackableId of entities.attackables.idsIterable) {
             if (attackableId === id) {
                 continue
@@ -106,9 +106,11 @@ export class MovableAttacker {
                 continue
             }
 
-            const distance = attackable.pos.distanceTo(this.pos)
+            const attackablePos = entities.positionables.get(attackableId)
+            const myPos = entities.positionables.get(id)
+            const distance = attackablePos.distanceTo(myPos)
             if (distance <= this.viewRange) {
-                return { id: attackableId, att: attackable }
+                return attackableId
             }
         }
 
@@ -116,8 +118,9 @@ export class MovableAttacker {
     }
 
     private stopIfMoving(id: string, area: Area, userFunctions: UserFunctions) {
-        if (this.movable.movable.isMoving) {
-            this.movable.stop(id, area, userFunctions, null)
+        const movable = area.entities.movables.get(id)
+        if (movable.movable.isMoving) {
+            movable.stop(id, area, userFunctions, null)
         }
     }
 }

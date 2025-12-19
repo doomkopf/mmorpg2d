@@ -23,12 +23,12 @@ export const movePlayer1: EntityFunc<Area, MovePlayerRequest> = {
         area.update(lib, id)
 
         if (!areaUseCaseValidations(area, ctx.requestingUserId)) {
-            return
+            return area
         }
 
         const attackable = area.entities.attackables.get(ctx.requestingUserId)
         if (!attackable.isAlive) {
-            return
+            return area
         }
 
         const pos = area.entities.positionables.get(ctx.requestingUserId)
@@ -43,5 +43,7 @@ export const movePlayer1: EntityFunc<Area, MovePlayerRequest> = {
             lib.user,
             useClientPos ? ctx.requestingUserId : null,
         )
+
+        return area
     },
 }

@@ -1,9 +1,14 @@
+import { JsonObject } from "../../../tmp-api/core"
 import { TileCoord } from "../../engine-shared/TileCoord"
 
 export class Floor {
     constructor(
         private readonly floor: string[][],
     ) {
+    }
+
+    static fromObject(obj: JsonObject): Floor {
+        return new Floor(obj.floor)
     }
 
     get readonlyArray() {
