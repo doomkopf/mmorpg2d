@@ -3,11 +3,11 @@ import { ArcturusWebsocket, ArcturusWebsocketListener } from "./arcturus-websock
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export type Json = Record<string, any>
 
-interface Message {
+export interface Message {
     app: AppMessage
 }
 
-interface AppMessage {
+export interface AppMessage {
     appId: string
     theFunc: string
     entityMsg?: EntityMessage
@@ -16,7 +16,7 @@ interface AppMessage {
     rid?: string
 }
 
-interface EntityMessage {
+export interface EntityMessage {
     entityType: string
     entityId: string
 }
@@ -108,34 +108,7 @@ export class ArcturusClient {
         this.ws?.send(payload)
     }
 
-    async send(
-        func: string,
-        appId: string,
-        entityType: string,
-        entityId: string,
-        sessionId: string | undefined,
-        requestId: string | null,
-        requestBody: Json,
-    ): Promise<void> {
-
-        let entityMsg: EntityMessage | undefined
-        if (entityType && entityType.length > 0) {
-            entityMsg = {
-                entityType,
-                entityId,
-            }
-        }
-
-        const msg: Message = {
-            app: {
-                appId,
-                theFunc: func,
-                payload: JSON.stringify(requestBody),
-                sid: sessionId,
-                rid: requestId || undefined,
-                entityMsg,
-            },
-        }
+    async send(msg: Message): Promise<void> {
         this.sendQueue.push(JSON.stringify(msg))
 
         if (!await this.connectIfNotConnected()) {

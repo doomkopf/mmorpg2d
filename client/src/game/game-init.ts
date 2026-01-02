@@ -40,7 +40,7 @@ export async function init(
     gameCtx.server.addMessageHandler(UseCaseId.DEATH, new EntityDiedHandler(gameCtx))
     gameCtx.server.addMessageHandler(UseCaseId.UPDATE_NPC_SPAWN_POINTS, new UpdateNpcSpawnPointsHandler(gameCtx))
 
-    gameCtx.server.send(UseCaseId.JOIN_GAME, "", "", {})
+    gameCtx.server.send(UseCaseId.JOIN_GAME, {})
 
     new PlayerGlobalInputController(ctx.soundManager, gameCtx, globalInputDispatcher)
     new AdminGlobalInputController(gameCtx, globalInputDispatcher)

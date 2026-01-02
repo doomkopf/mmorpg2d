@@ -47,7 +47,7 @@ export class PlayerGlobalInputController implements GlobalInputListener {
 
     private attack(userId: string) {
         if (this.gameCtx.area?.entities.humanoidAnimations.get(userId).attack(Date.now())) {
-            this.gameCtx.server.send(UseCaseId.ATTACK, "", "", {})
+            this.gameCtx.server.send(UseCaseId.ATTACK, {})
         }
     }
 
@@ -122,7 +122,7 @@ export class PlayerGlobalInputController implements GlobalInputListener {
             pos: playerPos,
             dir: playerMov.dir,
         }
-        this.gameCtx.server.send(UseCaseId.MOVE_PLAYER, "", "", movePlayer)
+        this.gameCtx.server.send(UseCaseId.MOVE_PLAYER, movePlayer)
     }
 
     private playerStop(ctx: EngineAppContext) {
@@ -135,7 +135,7 @@ export class PlayerGlobalInputController implements GlobalInputListener {
             const stopPlayer: StopPlayerRequest = {
                 pos: area.entities.positionables.get(this.gameCtx.userId),
             }
-            this.gameCtx.server.send(UseCaseId.STOP_PLAYER, "", "", stopPlayer)
+            this.gameCtx.server.send(UseCaseId.STOP_PLAYER, stopPlayer)
         }
     }
 

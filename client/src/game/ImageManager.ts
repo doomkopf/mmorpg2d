@@ -40,7 +40,7 @@ export class ImageManager implements ImageProvider, ImageDropListener, ItemSelec
             url: dataUrl,
             id: grid.findItemAt(x, y)?.id,
         }
-        const response = await this.gameCtx.server.request(UseCaseId.UPLOAD_IMAGE, "", "", request) as UploadImageResponse
+        const response = await this.gameCtx.server.request(UseCaseId.UPLOAD_IMAGE, request) as UploadImageResponse
         if (response[STATUS_KEY] === StatusKey.OK && response.imgId) {
             if (response.isNew) {
                 this.map.set(response.imgId, dataUrl)
@@ -66,7 +66,7 @@ export class ImageManager implements ImageProvider, ImageDropListener, ItemSelec
                 id: item.id,
                 name: newName,
             }
-            const response = await this.gameCtx.server.request(UseCaseId.SET_IMAGE_NAME, "", "", request) as SetImageNameResponse
+            const response = await this.gameCtx.server.request(UseCaseId.SET_IMAGE_NAME, request) as SetImageNameResponse
             if (response[STATUS_KEY] !== StatusKey.OK) {
                 console.error(response[STATUS_KEY])
                 return
@@ -86,7 +86,10 @@ export class ImageManager implements ImageProvider, ImageDropListener, ItemSelec
             return url
         }
 
-        const response: GetImageResponse = await this.gameCtx.server.request(UseCaseId.GET_IMAGE, "image", id, {})
+        const response: GetImageResponse = await this.gameCtx.server.request(UseCaseId.GET_IMAGE, {}, {
+            entityId: id,
+            entityType: "image",
+        })
         if (response.url) {
             this.map.set(id, response.url)
         }
@@ -95,7 +98,7 @@ export class ImageManager implements ImageProvider, ImageDropListener, ItemSelec
     }
 
     async retrieveAllImagesInfo(): Promise<ImageInfo[]> {
-        const response = await this.gameCtx.server.request(UseCaseId.GET_ALL_IMAGE_INFOS, "", "", {}) as GetAllImageInfosResponse
+        const response = await this.gameCtx.server.request(UseCaseId.GET_ALL_IMAGE_INFOS, {}) as GetAllImageInfosResponse
 
         const infos: ImageInfo[] = []
         for (const id in response.infos) {

@@ -78,7 +78,7 @@ export class AreaAdminController implements AreaInputListener {
             min: { x: min.x.value, y: min.y.value },
             max: { x: max.x.value, y: max.y.value },
         }
-        this.gameCtx.server.send(UseCaseId.DRAW_FLOOR, "", "", drawFloor)
+        this.gameCtx.server.send(UseCaseId.DRAW_FLOOR, drawFloor)
     }
 
     private placeSelectedTileObjects(min: TileCoord, max: TileCoord, walkable: boolean, stackAnim: boolean) {
@@ -94,7 +94,7 @@ export class AreaAdminController implements AreaInputListener {
             min: { x: min.x.value, y: min.y.value },
             max: { x: max.x.value, y: max.y.value },
         }
-        this.gameCtx.server.send(UseCaseId.DRAW_TILE_OBJECTS, "", "", drawTileObjects)
+        this.gameCtx.server.send(UseCaseId.DRAW_TILE_OBJECTS, drawTileObjects)
     }
 
     private placeSelectedAir(min: TileCoord, max: TileCoord) {
@@ -108,7 +108,7 @@ export class AreaAdminController implements AreaInputListener {
             min: { x: min.x.value, y: min.y.value },
             max: { x: max.x.value, y: max.y.value },
         }
-        this.gameCtx.server.send(UseCaseId.DRAW_AIR, "", "", drawAir)
+        this.gameCtx.server.send(UseCaseId.DRAW_AIR, drawAir)
     }
 
     private removeTileObjects(min: TileCoord, max: TileCoord) {
@@ -119,7 +119,7 @@ export class AreaAdminController implements AreaInputListener {
             min: { x: min.x.value, y: min.y.value },
             max: { x: max.x.value, y: max.y.value },
         }
-        this.gameCtx.server.send(UseCaseId.DRAW_TILE_OBJECTS, "", "", drawTileObjects)
+        this.gameCtx.server.send(UseCaseId.DRAW_TILE_OBJECTS, drawTileObjects)
     }
 
     private removeAir(min: TileCoord, max: TileCoord) {
@@ -127,7 +127,7 @@ export class AreaAdminController implements AreaInputListener {
             min: { x: min.x.value, y: min.y.value },
             max: { x: max.x.value, y: max.y.value },
         }
-        this.gameCtx.server.send(UseCaseId.DRAW_AIR, "", "", drawAir)
+        this.gameCtx.server.send(UseCaseId.DRAW_AIR, drawAir)
     }
 
     onDoubleClick(ctx: EngineAppContext, x: number, y: number): void {
@@ -144,7 +144,7 @@ export class AreaAdminController implements AreaInputListener {
             templateId: selection.selectedItem.id,
             pos: { x, y },
         }
-        this.gameCtx.server.send(UseCaseId.PLACE_ENTITY, "", "", placeEntity)
+        this.gameCtx.server.send(UseCaseId.PLACE_ENTITY, placeEntity)
     }
 
     private async placeSelectedTemplateAsNpcSpawnPoint(x: number, y: number) {
@@ -157,7 +157,7 @@ export class AreaAdminController implements AreaInputListener {
             pos: { x, y },
             templateId: selection.selectedItem.id,
         }
-        this.gameCtx.server.request(UseCaseId.PLACE_NPC_SPAWN_POINT, "", "", placeNpcSpawnPoint)
+        this.gameCtx.server.request(UseCaseId.PLACE_NPC_SPAWN_POINT, placeNpcSpawnPoint)
     }
 
     private async removeNpcSpawnPoint(x: number, y: number) {
@@ -174,7 +174,7 @@ export class AreaAdminController implements AreaInputListener {
                 const removeNpcSpawnPoint: RemoveNpcSpawnPointRequest = {
                     id: sp.id,
                 }
-                this.gameCtx.server.request(UseCaseId.REMOVE_NPC_SPAWN_POINT, "", "", removeNpcSpawnPoint)
+                this.gameCtx.server.request(UseCaseId.REMOVE_NPC_SPAWN_POINT, removeNpcSpawnPoint)
                 break
             }
         }

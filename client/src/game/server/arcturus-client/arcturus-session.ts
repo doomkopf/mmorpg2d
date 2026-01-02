@@ -1,4 +1,4 @@
-import { ArcturusClient, ArcturusClientListener, Json, WebsocketFactory } from "./arcturus-client"
+import { ArcturusClient, ArcturusClientListener, EntityMessage, Json, WebsocketFactory } from "./arcturus-client"
 
 const STATUS_SERVICE_NOT_AVAILABLE = "serviceNotAvailable"
 const RESPONSE_KEY_REQUEST_ID = "gamrid"
@@ -40,23 +40,6 @@ export class ArcturusSession implements ArcturusClientListener {
             port,
             websocketFactory,
             this)
-    }
-
-    private sendDirect(
-        func: string,
-        entityType: string,
-        entityId: string,
-        requestId: string | null,
-        json: Json,
-    ) {
-        this.client.send(
-            func,
-            this.appId,
-            entityType,
-            entityId,
-            undefined, // no sessionId for now since for persistent sessions it is attached in server on login
-            requestId,
-            json)
     }
 
     onReceived(json: Json): void {
@@ -125,22 +108,42 @@ export class ArcturusSession implements ArcturusClientListener {
         this.messageHandlers.set(func, messageHandler)
     }
 
-    request(func: string, entityType: string, entityId: string, requestBody: Json, callback: (responseBody: Json) => void): void {
+    request(func: string, requestBody: Json, callback: (responseBody: Json) => void, entityMsg?: EntityMessage): void {
         const requestId = this.generateUuid()
         this.pendingCallbacks.set(requestId, callback)
-        this.sendDirect(func, entityType, entityId, requestId, requestBody)
-    }
-
-    async requestSync(func: string, entityType: string, entityId: string, requestBody: Json): Promise<Json> {
-        return new Promise(resolve => {
-            this.request(func, entityType, entityId, requestBody, responseBody => {
-                resolve(responseBody)
-            })
+        this.client.send({
+            app: {
+                appId: this.appId,
+                theFunc: func,
+                payload: JSON.stringify(requestBody),
+                rid: requestId,
+                entityMsg,
+            },
         })
     }
 
-    send(func: string, entityType: string, entityId: string, requestBody: Json): void {
-        this.sendDirect(func, entityType, entityId, null, requestBody)
+    async requestSync(func: string, requestBody: Json, entityMsg?: EntityMessage): Promise<Json> {
+        return new Promise(resolve => {
+            this.request(
+                func,
+                requestBody,
+                responseBody => {
+                    resolve(responseBody)
+                },
+                entityMsg,
+            )
+        })
+    }
+
+    send(func: string, requestBody: Json, entityMsg?: EntityMessage): void {
+        this.client.send({
+            app: {
+                appId: this.appId,
+                theFunc: func,
+                payload: JSON.stringify(requestBody),
+                entityMsg,
+            },
+        })
     }
 
     isConnected(): boolean {

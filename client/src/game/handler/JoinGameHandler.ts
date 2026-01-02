@@ -85,7 +85,7 @@ export class JoinGameHandler implements MessageHandler {
                         id: selectedItem.id,
                         template: {}, // TODO
                     }
-                    await server.request(UseCaseId.SET_ENTITY_TEMPLATE, "", "", req)
+                    await server.request(UseCaseId.SET_ENTITY_TEMPLATE, req)
                     console.log("Sent req")
                 },
             },
@@ -121,7 +121,7 @@ export class JoinGameHandler implements MessageHandler {
     }
 
     private async initEntityTemplateSelection(topLeft: Coord, bottomRight: Coord, humanoidAnimBuilder: ItemSelectionGrid): Promise<ItemSelectionGrid> {
-        const entityTemplates = await this.gameCtx.server.request(UseCaseId.GET_ALL_ENTITY_TEMPLATES, "", "", {}) as EntityTemplates
+        const entityTemplates = await this.gameCtx.server.request(UseCaseId.GET_ALL_ENTITY_TEMPLATES, {}) as EntityTemplates
 
         this.gameCtx.entityTemplates = entityTemplates
 
@@ -148,7 +148,7 @@ export class JoinGameHandler implements MessageHandler {
                     const request: GetEntityTemplateRequest = {
                         id: item.id,
                     }
-                    const response = await server.request(UseCaseId.GET_ENTITY_TEMPLATE, "", "", request) as GetEntityTemplateResponse
+                    const response = await server.request(UseCaseId.GET_ENTITY_TEMPLATE, request) as GetEntityTemplateResponse
                     if (response.template) {
                         let item = humanoidAnimBuilder.findItemById("li")
                         if (item) item.imgId = response.template.humanoidAnimations?.animations.leftIdle.imageIds[0]

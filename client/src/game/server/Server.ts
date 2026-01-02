@@ -1,6 +1,6 @@
 import { STATUS_KEY, USE_CASE_ID, UseCaseId } from "../shared/dto"
 import { generateUuid } from "../tools"
-import { Json } from "./arcturus-client/arcturus-client"
+import { EntityMessage, Json } from "./arcturus-client/arcturus-client"
 import { ArcturusSession, ArcturusSessionListener, MessageHandler } from "./arcturus-client/arcturus-session"
 import { createBrowserArcturusWebsocket } from "./arcturus-client/arcturus-websocket"
 
@@ -24,12 +24,12 @@ export class Server implements ArcturusSessionListener {
         this.session.addMessageHandler(ucId.toString(), messageHandler)
     }
 
-    request(usecase: UseCaseId, entityType: string, entityId: string, requestBody: Json): Promise<Json> {
-        return this.session.requestSync(usecase.toString(), entityType, entityId, requestBody)
+    request(usecase: UseCaseId, requestBody: Json, entityMsg?: EntityMessage): Promise<Json> {
+        return this.session.requestSync(usecase.toString(), requestBody, entityMsg)
     }
 
-    send(usecase: UseCaseId, entityType: string, entityId: string, requestBody: Json): void {
-        this.session.send(usecase.toString(), entityType, entityId, requestBody)
+    send(usecase: UseCaseId, requestBody: Json, entityMsg?: EntityMessage): void {
+        this.session.send(usecase.toString(), requestBody, entityMsg)
     }
 
     onConnected(): void {

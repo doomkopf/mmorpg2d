@@ -58,7 +58,7 @@ export class AdminGlobalInputController implements GlobalInputListener {
         const removeImage: RemoveImageRequest = {
             id: selection.selectedItem.id,
         }
-        const response = await this.gameCtx.server.request(UseCaseId.REMOVE_IMAGE, "", "", removeImage) as RemoveImageResponse
+        const response = await this.gameCtx.server.request(UseCaseId.REMOVE_IMAGE, removeImage) as RemoveImageResponse
         if (response[STATUS_KEY] === StatusKey.OK) {
             selection.removeItemById(selection.selectedItem.id)
         }
@@ -66,7 +66,7 @@ export class AdminGlobalInputController implements GlobalInputListener {
 
     private async setVisible(visible: boolean) {
         const setPlayerVisible: SetPlayerVisibleRequest = { visible }
-        const response = await this.gameCtx.server.request(UseCaseId.SET_PLAYER_VISIBLE, "", "", setPlayerVisible) as SetPlayerVisibleResponse
+        const response = await this.gameCtx.server.request(UseCaseId.SET_PLAYER_VISIBLE, setPlayerVisible) as SetPlayerVisibleResponse
         if (response[STATUS_KEY] !== StatusKey.OK) {
             alert(response[STATUS_KEY])
         } else {
